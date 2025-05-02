@@ -244,6 +244,7 @@ class MCTSAgent(FastAgent):
         self.early_stop_fn = early_stop_fn
 
         # Check if the model is multimodal.
+        print(f"Prompt constructor: {self.prompt_constructor}")
         if is_vlm(self.lm_config) and prompt_constructor.is_multimodal:
             self.multimodal_inputs = True
             logger.info("Using multimodal input in prompt.")
@@ -307,6 +308,7 @@ class MCTSAgent(FastAgent):
                 )
 
         if self.multimodal_inputs:
+            print(f"Constructing multimodal prompt")
             prompt = self.prompt_constructor.construct(
                 trajectory, intent, page_screenshot_img, images, meta_data
             )

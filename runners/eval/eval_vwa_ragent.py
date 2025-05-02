@@ -114,6 +114,8 @@ class EvalArguments:
 def config() -> tuple[EvalArguments, ReinforcedAgentArguments]:
     parser = HfArgumentParser((EvalArguments, ReinforcedAgentArguments))
     eval_args, agent_args = parser.parse_args_into_dataclasses()
+    # print("eval_args: ", eval_args)
+    # print("agent_args: ", agent_args)
 
     ## cross checks
     if (
@@ -174,6 +176,7 @@ async def aevaluate_single_task(
         # Load task.
         with open(config_file) as f:
             _c = json.load(f)
+            print("config: ", _c)
             intent = _c["intent"]
             task_id = _c["task_id"]
             image_paths = _c.get("image", None)
@@ -182,6 +185,7 @@ async def aevaluate_single_task(
             # automatically login
             if _c["storage_state"]:
                 cookie_file_name = os.path.basename(_c["storage_state"])
+                print("cookie_file_name: ", cookie_file_name)
                 comb = get_site_comb_from_filepath(cookie_file_name)
                 temp_dir = tempfile.mkdtemp()
                 # subprocess to renew the cookie
@@ -476,39 +480,40 @@ def test(
         caption_image_fn = None
 
     # Load a (possibly different) captioning model for running VQA evals.
-    # if DATASET == 'visualwebarena':
-    #     if (
-    #         caption_image_fn
-    #         and eval_args.eval_captioning_model == agent_args.captioning_model
-    #     ):
-    #         eval_caption_image_fn = caption_image_fn
-    #     else:
-    #         caption_model_dtype = torch.float32
-    #         if torch.cuda.is_available() and eval_args.eval_captioning_model_device == "cuda":
-    #             caption_model_dtype = torch.float16
-    #         eval_caption_image_fn = image_utils.get_captioning_fn(
-    #             eval_args.eval_captioning_model_device,
-    #             caption_model_dtype,
-    #             eval_args.eval_captioning_model,
-    #         )
-    # else:
-    #     caption_image_fn = None
-    #     eval_caption_image_fn = None
-    if (
-        caption_image_fn
-        and eval_args.eval_captioning_model == agent_args.captioning_model
-    ):
-        eval_caption_image_fn = caption_image_fn
+    if DATASET == 'visualwebarena':
+        if (
+            caption_image_fn
+            and eval_args.eval_captioning_model == agent_args.captioning_model
+        ):
+            eval_caption_image_fn = caption_image_fn
+        else:
+            caption_model_dtype = torch.float32
+            if torch.cuda.is_available() and eval_args.eval_captioning_model_device == "cuda":
+                caption_model_dtype = torch.float16
+            eval_caption_image_fn = image_utils.get_captioning_fn(
+                eval_args.eval_captioning_model_device,
+                caption_model_dtype,
+                eval_args.eval_captioning_model,
+            )
     else:
-        caption_model_dtype = torch.float32
-        if torch.cuda.is_available() and eval_args.eval_captioning_model_device == "cuda":
-            caption_model_dtype = torch.float16
-        eval_caption_image_fn = image_utils.get_captioning_fn(
-            eval_args.eval_captioning_model_device,
-            caption_model_dtype,
-            eval_args.eval_captioning_model,
-        )
+        caption_image_fn = None
+        eval_caption_image_fn = None
+    # if (
+    #     caption_image_fn
+    #     and eval_args.eval_captioning_model == agent_args.captioning_model
+    # ):
+    #     eval_caption_image_fn = caption_image_fn
+    # else:
+    #     caption_model_dtype = torch.float32
+    #     if torch.cuda.is_available() and eval_args.eval_captioning_model_device == "cuda":
+    #         caption_model_dtype = torch.float16
+    #     eval_caption_image_fn = image_utils.get_captioning_fn(
+    #         eval_args.eval_captioning_model_device,
+    #         caption_model_dtype,
+    #         eval_args.eval_captioning_model,
+    #     )
 
+    print(f"Constructing reinforced agent with {agent_args.prompt_constructor_type=}")
     agent = construct_reinforced_agent(
         agent_args,
         captioning_fn=caption_image_fn if eval_args.observation_type == "accessibility_tree_with_captioner" else None

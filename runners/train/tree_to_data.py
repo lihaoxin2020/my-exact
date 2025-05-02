@@ -38,12 +38,13 @@ from collections import defaultdict
 DSET_NAME_TO_FOLDER = {
     "classifields": "configs/visualwebarena/test_classifieds_v2",
     "reddit": "configs/visualwebarena/test_reddit_v2",
-    "shopping": "configs/visualwebarena/test_shopping_v2"
+    "shopping": "configs/visualwebarena/test_shopping_v2",
+    "gitlab": "configs/webarena/test_gitlab_v2"
 }
 
 # since we need to do some rephrasing, we need access to an LLM
-assert os.get("VALUE_FUNC_PROVIDER", None) is not None, "VALUE_FUNC_PROVIDER not set"
-assert os.get("VALUE_FUNC_API_BASE", None) is not None, "VALUE_FUNC_API_BASE not set"
+assert os.environ.get("VALUE_FUNC_PROVIDER", None) is not None, "VALUE_FUNC_PROVIDER not set"
+assert os.environ.get("VALUE_FUNC_API_BASE", None) is not None, "VALUE_FUNC_API_BASE not set"
 
 llm_config = LMConfig(
     provider=os.environ['VALUE_FUNC_PROVIDER'],
@@ -1752,6 +1753,7 @@ def _process_exploratory_learning_data(env_name, result_dir, output_dir):
         print(f"length={k}, {v=}")
 
     ### save
+    os.makedirs(output_dir, exist_ok=True)
     tree_traj_save_path = os.path.join(output_dir, f"tmp_{env_name}_tree.pkl.xz")
 
     truncated_formatted_trajs = []
@@ -1797,6 +1799,8 @@ def _process_exploratory_learning_data(env_name, result_dir, output_dir):
     # combine
     rebalanced_filtered_trainable_tree_chats = _has_backtrack_trajs + _non_backtrack_trajs
     rebalanced_filtered_trainable_tids = _has_backtrack_tids + _non_backtrack_tids
+    # from IPython import embed
+    # embed()
     percent_has_backtrack = num_has_backtrack / len(rebalanced_filtered_trainable_tree_chats)
     print(f"num has backtrack: {num_has_backtrack} out of {len(rebalanced_filtered_trainable_tree_chats)}, percentage {percent_has_backtrack*100.0:.2f}%")
 

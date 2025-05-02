@@ -77,7 +77,7 @@ def call_llm(
             assert isinstance(prompt, list)
             # special case with o1 model
             # otherwise, its openai v.s. azure client
-            if "o1" in lm_config.model:
+            if "o1" in lm_config.model or "o4" in lm_config.model or "o3" in lm_config.model:
                 response = generate_from_openai_requestapi_chat_completion(
                     client,
                     messages=prompt,

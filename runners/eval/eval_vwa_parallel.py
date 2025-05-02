@@ -9,8 +9,8 @@ import openai
 import lzma
 import pickle
 import shutil
-from runners.utils.prepare_vwa import EnvNames, EnvStatus, ENV_RESET_TIMEOUT, get_env_status
-from runners.utils.prepare_vwa import main as prepare_vwa_main
+# from runners.utils.prepare_vwa import EnvNames, EnvStatus, ENV_RESET_TIMEOUT, get_env_status
+# from runners.utils.prepare_vwa import main as prepare_vwa_main
 from dataclasses import dataclass, field
 from concurrent.futures import ThreadPoolExecutor
 from transformers import HfArgumentParser
@@ -19,8 +19,8 @@ from azure.identity import DefaultAzureCredential, get_bearer_token_provider
 # environment variables
 from configs.llms.providers import AVAILABLE_API_PROVIDERS, _API_PROVIDERS
 from browser_env.env_config import (
-    CLASSIFIEDS,
-    CLASSIFIEDS_RESET_TOKEN,
+    # CLASSIFIEDS,
+    # CLASSIFIEDS_RESET_TOKEN,
     GITLAB,
     HOMEPAGE,
     MAP,
@@ -30,10 +30,9 @@ from browser_env.env_config import (
     WIKIPEDIA,
 )
 
-
+# export CLASSIFIEDS="{CLASSIFIEDS}"
+# export CLASSIFIEDS_RESET_TOKEN="{CLASSIFIEDS_RESET_TOKEN}"
 ENV_URLS_SH = f"""
-export CLASSIFIEDS="{CLASSIFIEDS}"
-export CLASSIFIEDS_RESET_TOKEN="{CLASSIFIEDS_RESET_TOKEN}"
 export SHOPPING="{SHOPPING}"
 export REDDIT="{REDDIT}"
 export WIKIPEDIA="{WIKIPEDIA}"
@@ -45,7 +44,7 @@ export HOMEPAGE="{HOMEPAGE}"
 
 
 assert os.environ.get("OPENAI_API_KEY") is not None, "Please set OPENAI_API_KEY"
-assert os.environ.get("AZURE_TOKEN_PROVIDER_API_BASE") is not None, "Please set AZURE_TOKEN_PROVIDER_API_BASE"
+# assert os.environ.get("AZURE_TOKEN_PROVIDER_API_BASE") is not None, "Please set AZURE_TOKEN_PROVIDER_API_BASE"
 
 
 logger = logging.getLogger(__name__)
@@ -58,12 +57,13 @@ class CommonArgs:
         metadata={
             "help": "The environment names to evaluate.",
             "choices": [
-                EnvNames.classifields,
-                EnvNames.cms,
-                EnvNames.gitlab,
-                EnvNames.reddit,
-                EnvNames.shopping,
-                EnvNames.wikipedia,
+                # EnvNames.classifields,
+                # EnvNames.cms,
+                # EnvNames.gitlab,
+                # EnvNames.reddit,
+                # EnvNames.shopping,
+                # EnvNames.wikipedia,
+                "gitlab",
             ],
         }
     )
@@ -155,8 +155,8 @@ class CommonArgs:
             self.main_api_providers = self.main_api_providers.split(",")
         assert len(self.main_api_providers) == self.num_parallel, f"Received {self.main_api_providers=} but has {self.num_parallel=}"
 
-        assert self.num_task_per_script <= 3, "Please set num_task_per_script <= 3 for reset to work nicely"
-        assert self.num_task_per_reset > self.num_task_per_script, f"Received {self.num_task_per_reset=} but has {self.num_task_per_script=}"
+        # assert self.num_task_per_script <= 3, "Please set num_task_per_script <= 3 for reset to work nicely"
+        # assert self.num_task_per_reset > self.num_task_per_script, f"Received {self.num_task_per_reset=} but has {self.num_task_per_script=}"
 
         # check test_indices or start_idx, end_idx
         if self.end_idx == -1 and self.test_indices == "":
@@ -274,7 +274,8 @@ def is_provider_alive(provider: str):
 
 def _wait_for_env_reset(env_name: str):
     # while loop to wait running new scipts when the env is resetting
-    max_time_to_wait = ENV_RESET_TIMEOUT
+    # max_time_to_wait = ENV_RESET_TIMEOUT
+    max_time_to_wait = 10 * 60 # 10 minutes
     time_elapsed = 0
     while time_elapsed < max_time_to_wait:
         time.sleep(10)
@@ -431,7 +432,7 @@ def run_single_script(env_name: str, test_indices: list[int], provider: str, sav
             'test_indices': test_indices,
             'provider': provider
         }
-    _wait_for_env_reset(env_name)
+    # _wait_for_env_reset(env_name)
     
     # inject provider into script for better reproducibility
     eval_shell_command = ""
@@ -556,7 +557,7 @@ def reserve_env(env_name: str):
         mode="reserve",
         env=env_name
     )
-    prepare_vwa_main(arg)
+    # prepare_vwa_main(arg)
     logger.info(f"Done reserving the environment {env_name}.")
     return
 
@@ -636,7 +637,7 @@ def polite_parallel_run(args: CommonArgs):
                 prev_num_finished += len(result['test_indices'])
         
         # done
-        free_env(args.env_name)
+        # free_env(args.env_name)
         logger.info(f"Finished running {len(finished_indices)} out of {len(all_task_indices)} tasks.")
         logger.info(f"Remaining tasks: {set(all_task_indices) - finished_indices}")
     return
@@ -705,7 +706,7 @@ def greedy_parallel_run(args: CommonArgs):
     prev_num_finished = 0
     finished_indices = set()
     refresh_env_login()
-    reset_env(args.env_name)
+    # reset_env(args.env_name)
 
     all_run_indices = get_all_run_task_indices(
         all_task_indices,
@@ -743,11 +744,11 @@ def greedy_parallel_run(args: CommonArgs):
             # run reset env
             # expect the next one is finishing soon
             check_failure = result['process.returncode'] == -100
-            if prev_num_finished * 2 >= args.num_task_per_reset and not check_failure:
-                refresh_env_login()
-                reset_env(args.env_name)
-                prev_num_finished = 0
-    free_env(args.env_name)
+            # if prev_num_finished * 2 >= args.num_task_per_reset and not check_failure:
+            #     refresh_env_login()
+            #     reset_env(args.env_name)
+            #     prev_num_finished = 0
+    # free_env(args.env_name)
     return
 
 

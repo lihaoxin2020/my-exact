@@ -9,6 +9,12 @@ class Tokenizer(object):
             # for o1, use gpt-4o tokenizer
             if "o1" in model_name:
                 self.tokenizer = tiktoken.encoding_for_model("gpt-4o")
+            # for 4.1, use gpt-4 tokenizer
+            elif "4.1" in model_name:
+                self.tokenizer = tiktoken.encoding_for_model("gpt-4")
+            # for o4-mini, use gpt-4o tokenizer
+            elif "o4" in model_name or "o3" in model_name:
+                self.tokenizer = tiktoken.encoding_for_model("gpt-4o")
             else:
                 self.tokenizer = tiktoken.encoding_for_model(model_name)
         elif provider in ["huggingface", "sglang"]:

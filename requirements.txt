@@ -1,0 +1,9 @@
+absl-py
+rouge-score
+langchain
+langchain-community
+langchain-openai
+langchain-huggingface
+torch==2.1
+azure-storage-blob 
+azure-identity

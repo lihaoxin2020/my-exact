@@ -285,14 +285,21 @@ def generate_from_openai_chat_completion(
     if not DISABLE_LLM_CACHE and cache_key in SIMPLE_LLM_API_CACHE:
         logger.info(f"generate_from_openai_chat_completion hit cache")
         return SIMPLE_LLM_API_CACHE[cache_key]
-    response = client.chat.completions.create(
-        model=model,
-        messages=messages,
-        temperature=temperature,
-        max_tokens=max_tokens,
-        top_p=top_p,
-        n=num_outputs
-    )
+    if "o4" in model or "o3" in model:
+        response = client.chat.completions.create(
+            model=model,
+            messages=messages,
+            n=num_outputs
+        )
+    else:
+        response = client.chat.completions.create(
+            model=model,
+            messages=messages,
+            temperature=temperature,
+            max_tokens=max_tokens,
+            top_p=top_p,
+            n=num_outputs
+        )
 
     token_stats = {
         'completion_tokens': response.usage.completion_tokens,
@@ -403,7 +410,7 @@ def generate_from_openai_requestapi_chat_completion(
     stop_token: str | None = None,
     num_outputs: int = 1,
 ) -> Union[str, list[str]]:
-    assert 'o1' in model
+    assert 'o1' in model or 'o4' in model or 'o3' in model
     global INITIAL_DELAY
     INITIAL_DELAY = 30
     cache_key = _completion_args_to_cache_key(
@@ -418,17 +425,28 @@ def generate_from_openai_requestapi_chat_completion(
         logger.info(f"generate_from_azure_openai_chat_completion hit cache")
         return SIMPLE_LLM_API_CACHE[cache_key]
     messages = _reformat_o1_messages(messages)
-    url = os.environ['AZURE_O1_API_BASE']
-    api_key = os.environ['AZURE_O1_API_KEY']
+    # url = os.environ['AZURE_O1_API_BASE']
+    # api_key = os.environ['AZURE_O1_API_KEY']
+    url = os.environ.get('OPENAI_API_BASE', 'https://api.openai.com/v1') + '/chat/completions'
+    api_key = os.environ['OPENAI_API_KEY']
+    # organization = os.environ.get('OPENAI_ORGANIZATION', '')
 
-    headers = {'Content-Type': 'application/json', 'api-key': api_key}
+    headers = {
+        'Content-Type': 'application/json',
+        'Authorization': f'Bearer {api_key}'
+    }
+    
+    # if organization:
+    #     headers['OpenAI-Organization'] = organization
+        
     data = {  
-        'model': 'o1-mini',
+        'model': model,
         "messages": messages,
         'n': 1,
     }
 
     resp = requests.post(url, json=data, headers=headers)
+    print(resp.text)
     completion = resp.json()
     logger.debug(f"Completion: {completion}")
     try:
