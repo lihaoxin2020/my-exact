@@ -492,7 +492,10 @@ def test(
     # else:
     #     caption_image_fn = None
     #     eval_caption_image_fn = None
-    if (
+    if eval_args.observation_type in ["accessibility_tree", "html"] or "text" in eval_args.observation_type:
+        # Skip loading image models for text-only modalities
+        eval_caption_image_fn = None
+    elif (
         caption_image_fn
         and eval_args.eval_captioning_model == agent_args.captioning_model
     ):

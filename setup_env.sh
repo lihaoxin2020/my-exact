@@ -1,11 +1,11 @@
 ##### VLM providers
-export OPENAI_API_KEY=""
+export OPENAI_API_KEY="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"
 # export OPENAI_ORGANIZATION=org-xxx
-export HF_TOKEN=hf_xxx
+export HF_TOKEN=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
 # optional keys (other providers)
 # export AZURE_OPENAI_API_BASE=https://xxx
 # export AZURE_TOKEN_PROVIDER_API_BASE=https://xxx
-HOST_NAME=http://ec2-3-12-126-100.us-east-2.compute.amazonaws.com
+HOST_NAME=http://ec2-52-14-25-77.us-east-2.compute.amazonaws.com
 
 ##### (V)WA Web URLs
 export DATASET=webarena

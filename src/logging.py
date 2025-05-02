@@ -49,8 +49,20 @@ def setup_logger(log_folder: str = ''):
     urllib3.connectionpool.log.setLevel(logging.WARNING)
     httpcore._sync.http11.logger.setLevel(logging.WARNING)
     logging.getLogger('httpcore.connection').setLevel(logging.WARNING)
-    httpx._config.logger.setLevel(logging.WARNING)
-    openai._base_client.log.setLevel(logging.WARNING)
+    
+    # Handle newer versions of httpx where _config.logger may not exist
+    try:
+        httpx._config.logger.setLevel(logging.WARNING)
+    except AttributeError:
+        # For newer httpx versions
+        logging.getLogger('httpx').setLevel(logging.WARNING)
+    
+    # Handle potential attribute errors with OpenAI library versions
+    try:
+        openai._base_client.log.setLevel(logging.WARNING)
+    except AttributeError:
+        logging.getLogger('openai').setLevel(logging.WARNING)
+        
     PIL.PngImagePlugin.logger.setLevel(logging.WARNING)
     logging.getLogger('PIL.Image').setLevel(logging.WARNING)
     ## used by python -m scalene profiler
