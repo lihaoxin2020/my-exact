@@ -24,39 +24,25 @@ instruction_path="src/prompts/vwa/jsons/p_cot_id_actree_3s_final.json"
 # test_config_dir="configs/visualwebarena/test_classifieds_v2"
 test_config_dir="configs/webarena/test_gitlab_v2"
 
-# agent="rmcts_mad"
-
-# ##### start of search config
-# max_depth=4
-# max_steps=5
-# branching_factor=5  # default 5
-# vf_budget=20        # default 20
-# time_budget=2.5     # default 5.0 min per step (soft maximum), will override vf_budget if > 0.0
-
-# # policy config
-# prompt_constructor_type=ReinforcedPolicyPConstructorPureTEXT  # default ReinforcedPolicyPConstructor
-
-agent="search_refactored"
+agent="rmcts_mad"
 
 ##### start of search config
-max_depth=4  # max_depth=4 means 5 step lookahead
+max_depth=4
 max_steps=5
 branching_factor=5  # default 5
 vf_budget=20        # default 20
-time_budget=5.0     # 5.0 min per step (soft maximum), will override vf_budget if > 0.0
+time_budget=2.5     # default 5.0 min per step (soft maximum), will override vf_budget if > 0.0
 
-# prompt_constructor_type=MCoTPolicyPConstructor
-prompt_constructor_type=CoTPolicyPConstructor
-v_func_method=CoTwRubricValueFunction  # default CoTwRubricValueFunction
-
-# max_reflections_per_task=3         # default 3
-# reflection_threshold=0.5           # default 0.5
-# puct=1.0                           # default 1.0
+# policy config
+prompt_constructor_type=ReinforcedPolicyPConstructorPureTEXT  # default ReinforcedPolicyPConstructor
+max_reflections_per_task=3         # default 3
+reflection_threshold=0.5           # default 0.5
+puct=1.0                           # default 1.0
 
 # vfunc config
-# v_func_method=ReinforcedDebateValueFunction  # default ReinforcedRubricValueFunction
-# value_max_reflections_per_task=1   # default 2
-# value_reflection_threshold=0.5     # default 0.5
+v_func_method=ReinforcedDebateValueFunction  # default ReinforcedRubricValueFunction
+value_max_reflections_per_task=1   # default 2
+value_reflection_threshold=0.5     # default 0.5
 
 ##### end of search config
 
