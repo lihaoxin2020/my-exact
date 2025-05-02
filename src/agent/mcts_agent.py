@@ -501,7 +501,7 @@ class MCTSAgent(FastAgent):
                     init_screenshot=init_screenshot,
                     intent_images=images if len(images) > 0 else None
                 )
-            elif self.value_function_model in ["gpt-4o", "gpt-4o-mini", "OpenGVLab/InternVL2-Llama3-76B"]:
+            elif self.value_function_model in ["o4-mini", "gpt-4o", "gpt-4o-mini", "OpenGVLab/InternVL2-Llama3-76B"]:
                 v = self.value_function.evaluate_success(
                     screenshots=last_screenshots,
                     actions=copy.deepcopy(state.action_trajectory_str),

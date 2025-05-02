@@ -900,14 +900,21 @@ class CoTwRubricValueFunction(DirectCoTValueFunction, RubricBasedValueFunctionMi
 
         all_responses = []
         for model in models:
-            response = client.chat.completions.create(
-                model=model,
-                messages=messages,
-                max_tokens=256,
-                temperature=0.7,
-                top_p=top_p,
-                n=n // len(models)
-            )
+            if "o4" in model or "o3" in model:
+                response = client.chat.completions.create(
+                    model=model,
+                    messages=messages,
+                    n=1
+                )
+            else:
+                response = client.chat.completions.create(
+                    model=model,
+                    messages=messages,
+                    max_tokens=256,
+                    temperature=0.7,
+                    top_p=top_p,
+                    n=n // len(models)
+                )
 
             token_stats = {
                 'completion_tokens': response.usage.completion_tokens,
