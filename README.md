@@ -1,4 +1,4 @@
-# CPSC 577 Project: Training LLM for Web Navigation Agent: Self-Correction using DPO for test-time search trajectories
+# Improving LLM Web Navigation with Direct Preference Optimization Over Test-Time Scaling Responses
 
 This codebase is built on the ExACT project, which presents R-MCTS and Exploratory Learning for building o1-like models for agentic applications. For more details about the project, refer to [ORIGINAL_README.md](ORIGINAL_README.md).
 
