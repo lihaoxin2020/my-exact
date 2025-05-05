@@ -2,6 +2,8 @@
 
 This codebase is built on the ExACT project, which presents R-MCTS and Exploratory Learning for building o1-like models for agentic applications. For more details about the project, refer to [ORIGINAL_README.md](ORIGINAL_README.md).
 
+See the project report [here](<CPSC 577 Report.pdf>) and checklist [here](<Reproducibility checklis - Google Docs.pdf>). 
+
 ## Installation and Setup
 
 ### 1. WebArena Environment Setup
