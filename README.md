@@ -31,8 +31,8 @@ Once WebArena is set up, proceed with setting up the ExACT project:
 
 1. Clone the ExACT repository:
    ```bash
-   git clone https://github.com/microsoft/ExACT.git
-   cd ExACT
+   git clone https://github.com/lihaoxin2020/my-exact.git
+   cd my-exact
    ```
 
 2. Install the dependencies from requirements.txt:
@@ -71,9 +71,6 @@ After installing the dependencies, follow the remaining setup instructions from 
 
 2. Generate the task configurations:
    ```bash
-   # generate VWA task configs
-   export DATASET=visualwebarena
-   python runners/utils/generate_test_configs.py
    # generate WA task configs
    export DATASET=webarena
    python runners/utils/generate_test_configs.py
