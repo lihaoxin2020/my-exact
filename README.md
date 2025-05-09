@@ -93,27 +93,6 @@ After installing the dependencies, follow the remaining setup instructions from 
    python runners/utils/generate_test_configs.py
    ```
 
-3. Set up and launch the (V)WA Management server by following the instructions in the [ORIGINAL_README.md](ORIGINAL_README.md).
-
-## Computing Infrastructure and Configurations
-
-### Hardware and Software Specifications
-Our experiments were primarily conducted using the following infrastructure:
-- Training: TogetherAI platform with A100 GPUs for fine-tuning Llama-3.1-8B models
-- Inference: A combination of local machines with NVIDIA RTX 4090 GPUs (24GB VRAM) and cloud instances with A100 GPUs
-- Operating System: Ubuntu 20.04 LTS and macOS for development
-
-### Model Configurations
-For the models used in our experiments:
-- We used both quantized and non-quantized versions of Llama-3.1-8B
-- GPT-4o and GPT-4o-mini were used in their standard configurations via API calls
-- For fine-tuned models, we used the default float32 precision
-
-### Specific Optimizations
-- For R-MCTS and search-based agents, we implemented caching mechanisms to avoid redundant API calls
-- We optimized trajectory processing by using parallel execution where possible
-- Memory usage was optimized by storing screenshots and trajectories in compressed formats
-
 ## Evaluation Metrics and Methods
 
 ### Task Success Rate
